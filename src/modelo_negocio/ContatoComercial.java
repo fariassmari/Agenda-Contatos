@@ -1,10 +1,12 @@
 package modelo_negocio;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 import java.util.List;
 
 @Entity
+@PrimaryKeyJoinColumn(name = "id")
 public class ContatoComercial extends Contato{
     private String empresa;
 
@@ -12,7 +14,7 @@ public class ContatoComercial extends Contato{
 
     public ContatoComercial(String nome, List<String> telefones, String empresa, Cidade cidade){
         super(nome, telefones, cidade);
-        this.empresa=empresa;
+        this.empresa = empresa;
     }
 
     public String getEmpresa() {

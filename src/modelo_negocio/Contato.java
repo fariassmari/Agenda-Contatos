@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Contato {
+public abstract class Contato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,6 +25,7 @@ public class Contato {
     public Contato(String nome, List<String> telefones, Cidade cidade) {
         this.nome = nome;
         this.telefones = telefones;
+        this.cidade = cidade;
     }
 
     public int getId() {
