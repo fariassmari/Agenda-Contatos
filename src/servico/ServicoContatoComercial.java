@@ -27,11 +27,11 @@ public class ServicoContatoComercial extends Servico{
             if (cidade == null) {
                 throw new Exception("Para criar contato comercial, cidade é obrigatoria.");
             }
-            if (repContato.localizarNome(nome) != null) {
-                throw new Exception("Para criar contato comercial, não pode ser criado com nome já existente. ");
+            if (repContatoComercial.localizarNome(nome.trim()) != null) {
+                throw new Exception("Para criar contato comercial, não pode ser criado com nome já existente.");
             }
 
-            ContatoComercial contatoComercial = new ContatoComercial(nome, empresa, cidade);
+            ContatoComercial contatoComercial = new ContatoComercial(nome.trim(), empresa.trim(), cidade);
             repContatoComercial.criar(contatoComercial);
             repContatoComercial.commit();
         } catch (Exception e){
@@ -43,13 +43,13 @@ public class ServicoContatoComercial extends Servico{
     public static void alterarContatoComercial(String nome, String empresa, int idcidade) throws Exception{
         try {
             repContatoComercial.begin();
-            ContatoComercial contatoComercial = repContatoComercial.localizarNome(nome);
+            ContatoComercial contatoComercial = repContatoComercial.localizarNome(nome.trim());
             if (contatoComercial == null) {
-                throw new Exception ("Para alterar contato comercial, nome deve ser existente.");
+                throw new Exception("Para alterar contato comercial, nome deve ser existente.");
             }
 
-            if (empresa == null || empresa.isEmpty()) {
-                throw new Exception ("Para alterar contao comercial, empresa é obrigatoria.");
+            if (empresa == null || empresa.trim().isEmpty()) {
+                throw new Exception("Para alterar contato comercial, empresa é obrigatoria.");
             }
 
             Cidade cidade = repCidade.localizar(idcidade);
@@ -58,7 +58,7 @@ public class ServicoContatoComercial extends Servico{
             }
 
             contatoComercial.setCidade(cidade);
-            contatoComercial.setEmpresa(empresa);
+            contatoComercial.setEmpresa(empresa.trim());
             repContatoComercial.atualizar(contatoComercial);
             repContatoComercial.commit();
         } catch (Exception e){

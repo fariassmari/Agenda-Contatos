@@ -1,19 +1,24 @@
 package modelo_negocio;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
-import java.util.List;
-
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
-public class ContatoComercial extends Contato{
+public class ContatoComercial extends Contato {
     private String empresa;
 
-    public ContatoComercial(){}
+    public ContatoComercial() {}
 
-    public ContatoComercial(String nome, List<String> telefones, String empresa, Cidade cidade){
+    public ContatoComercial(String nome, List<String> telefones, String empresa, Cidade cidade) {
         super(nome, telefones, cidade);
+        this.empresa = empresa;
+    }
+
+    public ContatoComercial(String nome, String empresa, Cidade cidade) {
+        super(nome, null, cidade);
         this.empresa = empresa;
     }
 
