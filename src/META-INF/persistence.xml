@@ -8,6 +8,9 @@
         <description>Usa o provedor Hibernate com PostgreSQL</description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>modelo_negocio.Contato</class>
+        <class>modelo_negocio.ContatoPessoal</class>
+        <class>modelo_negocio.ContatoComercial</class>
+        <class>modelo_negocio.Cidade</class>
         <shared-cache-mode>NONE</shared-cache-mode>
 
         <properties>
@@ -26,6 +29,9 @@
         <description>Usa o provedor Hibernate com MySQL</description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>modelo_negocio.Contato</class>
+        <class>modelo_negocio.ContatoPessoal</class>
+        <class>modelo_negocio.ContatoComercial</class>
+        <class>modelo_negocio.Cidade</class>
         <shared-cache-mode>NONE</shared-cache-mode>
 
         <properties>
