@@ -1,5 +1,6 @@
 package modelo_negocio;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ public class ContatoComercial extends Contato {
     }
 
     public ContatoComercial(String nome, String empresa, Cidade cidade) {
-        super(nome, null, cidade);
+        super(nome, new ArrayList<>(), cidade);
         this.empresa = empresa;
     }
 

@@ -23,8 +23,8 @@ public abstract class Contato {
     public Contato() {}
 
     public Contato(String nome, List<String> telefones, Cidade cidade) {
-        this.nome = nome;
-        this.telefones = telefones;
+        this.nome = nome.toUpperCase();
+        this.telefones = (telefones != null) ? telefones : new ArrayList<>();
         this.cidade = cidade;
     }
 
@@ -41,7 +41,7 @@ public abstract class Contato {
     }
 
     public void setNome(String nome){
-        this.nome = nome;
+        this.nome = nome.toUpperCase();
     }
 
     public List<String> getTelefones() {

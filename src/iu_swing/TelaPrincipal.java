@@ -32,8 +32,9 @@ public class TelaPrincipal {
         frame.setResizable(false);
 
         JLabel label = new JLabel("Agenda de contatos", SwingConstants.CENTER);
+        label.setVerticalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Tahoma", Font.BOLD, 24));
-        label.setBounds(0, 0, 500, 260);
+        label.setBounds(0, 0, 490, 240);
         frame.getContentPane().add(label);
 
         frame.addWindowListener(new WindowAdapter() {

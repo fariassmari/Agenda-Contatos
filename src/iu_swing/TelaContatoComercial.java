@@ -38,7 +38,7 @@ public class TelaContatoComercial {
 
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(160, 160, 640, 480);
+        frame.setBounds(160, 160, 660, 480);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -80,7 +80,7 @@ public class TelaContatoComercial {
         frame.add(txtNovaCidade);
 
         JButton btnCidade = new JButton("Criar");
-        btnCidade.setBounds(565, y, 55, 22);
+        btnCidade.setBounds(565, y, 70, 22);
         btnCidade.addActionListener((ActionEvent e) -> criarCidade());
         frame.add(btnCidade);
 
@@ -229,7 +229,7 @@ public class TelaContatoComercial {
 
     private JButton button(String texto, int x, int y) {
         JButton btn = new JButton(texto);
-        btn.setBounds(x, y, 80, 22);
+        btn.setBounds(x, y, 100, 22);
         return btn;
     }
 
