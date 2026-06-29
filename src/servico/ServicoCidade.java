@@ -12,22 +12,30 @@ public class ServicoCidade extends Servico {
     }
 
     public static Cidade localizarCidade(String nome) {
-        return repCidade.localizarNome(nome);
+        if (nome == null || nome.trim().isEmpty()) {
+            return null;
+        }
+
+        return repCidade.localizarNome(nome.trim());
     }
 
     public static void criarCidade(String nome) throws Exception {
         try {
             repCidade.begin();
+
             if (nome == null || nome.trim().isEmpty()) {
                 throw new Exception("Nome da cidade é obrigatório.");
             }
 
-            if (repCidade.localizarNome(nome.trim()) != null) {
+            nome = nome.trim();
+
+            if (repCidade.localizarNome(nome) != null) {
                 throw new Exception("Cidade já cadastrada.");
             }
 
-            Cidade cidade = new Cidade(nome.trim());
+            Cidade cidade = new Cidade(nome);
             repCidade.criar(cidade);
+
             repCidade.commit();
         } catch (Exception e) {
             repCidade.rollback();
