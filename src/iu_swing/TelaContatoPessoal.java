@@ -26,8 +26,9 @@ public class TelaContatoPessoal {
     private DefaultTableModel tableModel;
     private JTextField txtNome;
     private JComboBox<String> cbCidade;
+    private JComboBox<Integer> cbGrauProximidade;
     private JTextField txtNovaCidade;
-    private String nomeSelecionado = null;
+    private Integer idSelecionado = null;
 
     public TelaContatoPessoal() {
         initialize();
@@ -41,7 +42,7 @@ public class TelaContatoPessoal {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
-        tableModel = new DefaultTableModel(new String[]{"ID", "Nome", "Cidade"}, 0) {
+        tableModel = new DefaultTableModel(new String[]{"ID", "Nome", "Grau", "Cidade"}, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -63,6 +64,11 @@ public class TelaContatoPessoal {
         txtNome = textField(90, y, 200);
         frame.add(txtNome);
 
+        frame.add(label("Grau:", 305, y));
+        cbGrauProximidade = new JComboBox<>(new Integer[]{1, 2, 3});
+        cbGrauProximidade.setBounds(390, y, 200, 22);
+        frame.add(cbGrauProximidade);
+        
         y += 35;
         frame.add(label("Cidade:", 10, y));
         cbCidade = new JComboBox<>();
@@ -101,9 +107,10 @@ public class TelaContatoPessoal {
         List<ContatoPessoal> lista = ServicoContatoPessoal.listarContatosPessoais();
         for (ContatoPessoal cp : lista) {
             tableModel.addRow(new Object[] {
-                    cp.getId(),
-                    cp.getNome(),
-                    cp.getCidade() != null ? cp.getCidade().getNome() : ""
+                cp.getId(),
+                cp.getNome(),
+                cp.getGrauProximidade(),
+                cp.getCidade() != null ? cp.getCidade().getNome() : ""
             });
         }
     }
@@ -121,21 +128,24 @@ public class TelaContatoPessoal {
         if (linha < 0) {
             return;
         }
-
-        nomeSelecionado = (String) tableModel.getValueAt(linha, 1);
-        txtNome.setText(nomeSelecionado);
-
-        String cidade = (String) tableModel.getValueAt(linha, 2);
+    
+        idSelecionado = (Integer) tableModel.getValueAt(linha, 0);
+        txtNome.setText((String) tableModel.getValueAt(linha, 1));
+        cbGrauProximidade.setSelectedItem((Integer) tableModel.getValueAt(linha, 2));
+    
+        String cidade = (String) tableModel.getValueAt(linha, 3);
         if (cidade != null) {
             cbCidade.setSelectedItem(cidade);
         }
     }
 
     private void novo() {
-        nomeSelecionado = null;
+        idSelecionado = null;
         table.clearSelection();
         txtNome.setText("");
+        cbGrauProximidade.setSelectedIndex(0);
         txtNovaCidade.setText("");
+    
         if (cbCidade.getItemCount() > 0) {
             cbCidade.setSelectedIndex(0);
         }
@@ -143,6 +153,7 @@ public class TelaContatoPessoal {
 
     private void salvar() {
         String nome = txtNome.getText().trim();
+        int grauProximidade = (Integer) cbGrauProximidade.getSelectedItem();
         String nomeCidade = (String) cbCidade.getSelectedItem();
 
         if (nome.isEmpty() || nomeCidade == null || nomeCidade.isEmpty()) {
@@ -157,10 +168,10 @@ public class TelaContatoPessoal {
         }
 
         try {
-            if (nomeSelecionado == null || nomeSelecionado.isEmpty()) {
-                ServicoContatoPessoal.criarContatoPessoal(nome, cidade.getId());
+            if (idSelecionado == null) {
+                ServicoContatoPessoal.criarContatoPessoal(nome, grauProximidade, cidade.getId());
             } else {
-                ServicoContatoPessoal.alterarContatoPessoal(nome, cidade.getId());
+                ServicoContatoPessoal.alterarContatoPessoal(idSelecionado, nome, grauProximidade, cidade.getId());
             }
             carregarTabela();
             novo();
@@ -207,7 +218,7 @@ public class TelaContatoPessoal {
     }
 
     private void telefone() {
-        if (nomeSelecionado == null) {
+        if (idSelecionado == null) {
             JOptionPane.showMessageDialog(frame, "Selecione um contato.");
             return;
         }
@@ -218,11 +229,7 @@ public class TelaContatoPessoal {
         }
 
         try {
-            ContatoPessoal cp = ServicoContatoPessoal.localizarContatoPessoal(nomeSelecionado);
-            if (cp == null) {
-                throw new Exception("Contato não encontrado");
-            }
-            ServicoContato.adicionarTelefoneContato(num.trim(), cp.getId());
+            ServicoContato.adicionarTelefoneContato(num.trim(), idSelecionado);
             JOptionPane.showMessageDialog(frame, "Telefone adicionado com sucesso.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
