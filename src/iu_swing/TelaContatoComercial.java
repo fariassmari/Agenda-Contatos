@@ -48,6 +48,7 @@ public class TelaContatoComercial {
                 return false;
             }
         };
+
         table = new JTable(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getSelectionModel().addListSelectionListener(e -> {
@@ -55,11 +56,13 @@ public class TelaContatoComercial {
                 preencherFormulario();
             }
         });
+
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBounds(10, 10, 610, 160);
         frame.add(scroll);
 
         int y = 185;
+
         frame.add(label("Nome:", 10, y));
         txtNome = textField(90, y, 200);
         frame.add(txtNome);
@@ -69,6 +72,7 @@ public class TelaContatoComercial {
         frame.add(txtEmpresa);
 
         y += 35;
+
         frame.add(label("Cidade:", 10, y));
         cbCidade = new JComboBox<>();
         cbCidade.setBounds(90, y, 200, 22);
@@ -103,7 +107,9 @@ public class TelaContatoComercial {
 
     private void carregarTabela() {
         tableModel.setRowCount(0);
+
         List<ContatoComercial> lista = ServicoContatoComercial.listarContatosEmpresa();
+
         for (ContatoComercial cc : lista) {
             tableModel.addRow(new Object[] {
                     cc.getId(),
@@ -116,7 +122,9 @@ public class TelaContatoComercial {
 
     private void carregarCidades() {
         cbCidade.removeAllItems();
+
         List<Cidade> cidades = ServicoCidade.listarCidades();
+
         for (Cidade cidade : cidades) {
             cbCidade.addItem(cidade.getNome());
         }
@@ -124,12 +132,16 @@ public class TelaContatoComercial {
 
     private void preencherFormulario() {
         int linha = table.getSelectedRow();
+
         if (linha < 0) {
             return;
         }
 
         nomeSelecionado = (String) tableModel.getValueAt(linha, 1);
+
         txtNome.setText(nomeSelecionado);
+        txtNome.setEditable(false);
+
         txtEmpresa.setText((String) tableModel.getValueAt(linha, 2));
 
         String cidade = (String) tableModel.getValueAt(linha, 3);
@@ -140,10 +152,15 @@ public class TelaContatoComercial {
 
     private void novo() {
         nomeSelecionado = null;
+
         table.clearSelection();
+
         txtNome.setText("");
+        txtNome.setEditable(true);
+
         txtEmpresa.setText("");
         txtNovaCidade.setText("");
+
         if (cbCidade.getItemCount() > 0) {
             cbCidade.setSelectedIndex(0);
         }
@@ -160,6 +177,7 @@ public class TelaContatoComercial {
         }
 
         Cidade cidade = ServicoCidade.localizarCidade(nomeCidade);
+
         if (cidade == null) {
             JOptionPane.showMessageDialog(frame, "Cidade inválida.");
             return;
@@ -169,10 +187,12 @@ public class TelaContatoComercial {
             if (nomeSelecionado == null || nomeSelecionado.isEmpty()) {
                 ServicoContatoComercial.criarContatoComercial(nome, empresa, cidade.getId());
             } else {
-                ServicoContatoComercial.alterarContatoComercial(nome, empresa, cidade.getId());
+                ServicoContatoComercial.alterarContatoComercial(nomeSelecionado, empresa, cidade.getId());
             }
+
             carregarTabela();
             novo();
+
             JOptionPane.showMessageDialog(frame, "Contato salvo com sucesso.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -181,16 +201,20 @@ public class TelaContatoComercial {
 
     private void apagar() {
         int linha = table.getSelectedRow();
+
         if (linha < 0) {
             JOptionPane.showMessageDialog(frame, "Selecione um contato para apagar.");
             return;
         }
 
         int id = (int) tableModel.getValueAt(linha, 0);
+
         try {
             ServicoContato.apagarContato(id);
+
             carregarTabela();
             novo();
+
             JOptionPane.showMessageDialog(frame, "Contato apagado com sucesso.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -199,6 +223,7 @@ public class TelaContatoComercial {
 
     private void criarCidade() {
         String nome = txtNovaCidade.getText().trim();
+
         if (nome.isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Digite o nome da nova cidade.");
             return;
@@ -206,10 +231,39 @@ public class TelaContatoComercial {
 
         try {
             ServicoCidade.criarCidade(nome);
+
             txtNovaCidade.setText("");
             carregarCidades();
-            cbCidade.setSelectedItem(nome);
+            cbCidade.setSelectedItem(nome.toUpperCase());
+
             JOptionPane.showMessageDialog(frame, "Cidade criada com sucesso.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void telefone() {
+        if (nomeSelecionado == null) {
+            JOptionPane.showMessageDialog(frame, "Selecione um contato.");
+            return;
+        }
+
+        String num = JOptionPane.showInputDialog(frame, "Digite o telefone: ");
+
+        if (num == null || num.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            ContatoComercial cc = ServicoContatoComercial.localizarContatoComercial(nomeSelecionado);
+
+            if (cc == null) {
+                throw new Exception("Contato não encontrado.");
+            }
+
+            ServicoContato.adicionarTelefoneContato(num.trim(), cc.getId());
+
+            JOptionPane.showMessageDialog(frame, "Telefone adicionado com sucesso.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -231,28 +285,5 @@ public class TelaContatoComercial {
         JButton btn = new JButton(texto);
         btn.setBounds(x, y, 100, 22);
         return btn;
-    }
-
-    private void telefone() {
-        if (nomeSelecionado == null) {
-            JOptionPane.showMessageDialog(frame, "Selecione um contato.");
-            return;
-        }
-
-        String num = JOptionPane.showInputDialog(frame, "Digite o telefone: ");
-        if (num == null || num.isEmpty()) {
-            return;
-        }
-
-        try {
-            ContatoComercial cc = ServicoContatoComercial.localizarContatoComercial(nomeSelecionado);
-            if (cc == null) {
-                throw new Exception("Contato não encontrado");
-            }
-            ServicoContato.adicionarTelefoneContato(num.trim(), cc.getId());
-            JOptionPane.showMessageDialog(frame, "Telefone adicionado com sucesso.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(frame, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-        }
     }
 }
