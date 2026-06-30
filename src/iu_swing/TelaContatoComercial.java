@@ -41,6 +41,7 @@ public class TelaContatoComercial {
         frame.setBounds(160, 160, 660, 480);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setResizable(false);
 
         tableModel = new DefaultTableModel(new String[]{"ID", "Nome", "Empresa", "Cidade"}, 0) {
             @Override
