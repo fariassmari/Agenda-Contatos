@@ -16,7 +16,7 @@ public class Cidade {
     public Cidade() {}
 
     public Cidade(String nome) {
-        this.nome = nome;
+        this.nome = nome.toUpperCase();
     }
 
     public int getId() {
